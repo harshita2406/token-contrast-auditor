@@ -34,8 +34,12 @@ export function getThreshold(context: Context, level: Level): number {
 export function getVerdict(ratio: number, context: Context, level: Level): Verdict {
   const threshold = getThreshold(context, level);
   if (ratio >= threshold) return 'Pass';
-  // Large text only applies in body text context at AA when ratio passes 3:1 large text threshold
-  if (context === 'body' && level === 'AA' && ratio >= 3) return 'LargeTextOnly';
+  // Large text only applies in body text context when ratio clears the large-text
+  // threshold for the selected level (3:1 at AA, 4.5:1 at AAA per PRD §6.2).
+  if (context === 'body') {
+    const largeTextThreshold = getThreshold('large', level);
+    if (ratio >= largeTextThreshold) return 'LargeTextOnly';
+  }
   if (threshold - ratio < 0.5) return 'NearMiss';
   return 'Fail';
 }
