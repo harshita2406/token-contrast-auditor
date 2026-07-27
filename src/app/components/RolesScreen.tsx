@@ -1,4 +1,4 @@
-import { ChevronLeft, Info } from 'lucide-react';
+import { ChevronLeft, Info, AlertTriangle } from 'lucide-react';
 import type { AppToken, Role } from '../types';
 
 interface RolesScreenProps {
@@ -28,6 +28,7 @@ function ColorSwatch({ hex }: { hex: string }) {
 export function RolesScreen({ tokens, onRoleChange, onStartAudit, onBack }: RolesScreenProps) {
   const textCount = tokens.filter(t => t.role === 'text' || t.role === 'both').length;
   const bgCount = tokens.filter(t => t.role === 'background' || t.role === 'both').length;
+  const bothCount = tokens.filter(t => t.role === 'both').length;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -61,6 +62,19 @@ export function RolesScreen({ tokens, onRoleChange, onStartAudit, onBack }: Role
           <Info size={15} className="mt-0.5 shrink-0 text-[#1D4ED8]" aria-hidden="true" />
           <p className="text-[#1E3A8A]" style={{ fontSize: '0.8125rem' }}>
             Roles are inferred from naming conventions (<code>text-*</code>, <code>surface-*</code>, etc.) and luminance. Only foreground tokens are checked against background tokens. Change a role if the inference is wrong — your override persists for this session.
+          </p>
+        </div>
+      </div>
+
+      {/* Known limitation: both-role tokens (PRD §9) */}
+      <div className="border-b border-border bg-[#FFFBEB] px-4 py-3 sm:px-6">
+        <div className="max-w-4xl mx-auto flex gap-2.5">
+          <AlertTriangle size={15} className="mt-0.5 shrink-0 text-[#B45309]" aria-hidden="true" />
+          <p className="text-[#78350F]" style={{ fontSize: '0.8125rem' }}>
+            <strong>Known limitation:</strong> tokens marked <em>Both</em> appear in the audit queue only under their text-role failures.
+            {bothCount > 0
+              ? ` ${bothCount} token${bothCount !== 1 ? 's' : ''} in this set ${bothCount !== 1 ? 'are' : 'is'} marked Both — ${bothCount !== 1 ? 'their' : 'its'} failures as a background are not shown as a separate count.`
+              : ' If you mark a token Both, its failures as a background will not be shown as a separate count.'}
           </p>
         </div>
       </div>
