@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { FileCode2, Hash, Variable, Loader2, AlertCircle, Shield } from 'lucide-react';
 import type { ParseError } from '../types';
 import { getSampleForFormat } from '../utils/sampleData';
+import { SelfAudit } from './SelfAudit';
 
 interface PasteScreenProps {
   format: 'json' | 'css' | 'hex';
@@ -227,9 +228,9 @@ export function PasteScreen({ format, value, parseStatus, parseError, onFormatCh
       </main>
 
       <footer className="border-t border-border px-6 py-3">
-        <p className="max-w-3xl mx-auto text-muted-foreground text-center" style={{ fontSize: '0.75rem' }}>
-          This interface's colour tokens are verified at WCAG AA.
-        </p>
+        <div className="max-w-3xl mx-auto flex justify-center">
+          <SelfAudit />
+        </div>
       </footer>
     </div>
   );

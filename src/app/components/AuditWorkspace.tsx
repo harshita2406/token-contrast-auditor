@@ -6,6 +6,7 @@ import type { AppToken, Context, Level, ContrastPair } from '../types';
 import { contrastRatio, getThreshold, getVerdict, findNearestPassing } from '../utils/contrast';
 import { TokenQueue } from './TokenQueue';
 import { ContrastTable } from './ContrastTable';
+import { SelfAudit } from './SelfAudit';
 
 interface AuditWorkspaceProps {
   tokens: AppToken[];
@@ -464,10 +465,7 @@ export function AuditWorkspace({
 
           {/* Footer */}
           <footer className="border-t border-border px-4 py-3 sm:px-6 mt-auto">
-            <p className="text-muted-foreground" style={{ fontSize: '0.75rem' }}>
-              This interface's colour tokens are verified at WCAG AA.
-              {' · '}Contrast ratios computed per WCAG 2.x relative luminance formula.
-            </p>
+            <SelfAudit />
           </footer>
         </main>
       </div>
