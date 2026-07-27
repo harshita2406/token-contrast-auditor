@@ -7,6 +7,7 @@ import { contrastRatio, getThreshold, getVerdict, findNearestPassing } from '../
 import { TokenQueue } from './TokenQueue';
 import { ContrastTable } from './ContrastTable';
 import { SelfAudit } from './SelfAudit';
+import { BuiltBy } from './BuiltBy';
 
 interface AuditWorkspaceProps {
   tokens: AppToken[];
@@ -465,7 +466,10 @@ export function AuditWorkspace({
 
           {/* Footer */}
           <footer className="border-t border-border px-4 py-3 sm:px-6 mt-auto">
-            <SelfAudit />
+            <div className="flex flex-col gap-1.5">
+              <SelfAudit />
+              <BuiltBy />
+            </div>
           </footer>
         </main>
       </div>

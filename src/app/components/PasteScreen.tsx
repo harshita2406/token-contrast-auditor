@@ -3,6 +3,7 @@ import { FileCode2, Hash, Variable, Loader2, AlertCircle, Shield } from 'lucide-
 import type { ParseError } from '../types';
 import { getSampleForFormat } from '../utils/sampleData';
 import { SelfAudit } from './SelfAudit';
+import { BuiltBy } from './BuiltBy';
 
 interface PasteScreenProps {
   format: 'json' | 'css' | 'hex';
@@ -228,8 +229,9 @@ export function PasteScreen({ format, value, parseStatus, parseError, onFormatCh
       </main>
 
       <footer className="border-t border-border px-6 py-3">
-        <div className="max-w-3xl mx-auto flex justify-center">
+        <div className="max-w-3xl mx-auto flex flex-col items-center gap-1.5">
           <SelfAudit />
+          <BuiltBy />
         </div>
       </footer>
     </div>
