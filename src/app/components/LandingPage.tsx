@@ -39,19 +39,22 @@ const STEPS = [
     idx: "01",
     title: "Paste your tokens",
     body: "JSON, CSS custom properties, or a bare hex list. Nested or flat.",
-    shot: "Input screen",
+    img: "/step-1-input.png",
+    alt: "The paste screen with a JSON token set in the input field",
   },
   {
     idx: "02",
     title: "Confirm the roles",
     body: "Text and background are inferred from names and luminance. Correct anything it gets wrong.",
-    shot: "Role review",
+    img: "/step-2-roles.png",
+    alt: "The role review table showing tokens tagged as text or background",
   },
   {
     idx: "03",
     title: "Read the results",
     body: "Every failing pair, worst first, with a corrected hex that keeps your hue.",
-    shot: "Results table",
+    img: "/step-3-results.png",
+    alt: "The results table showing contrast ratios and verdicts for each pair",
   },
 ];
 
@@ -92,9 +95,15 @@ export default function LandingPage() {
               <span className="lp-screen__dot" />
               <span className="lp-screen__url">token-contrast-auditor.app</span>
             </div>
-            <div className="lp-screen__body" role="img" aria-label="Product demo video">
-              Product demo
-            </div>
+            <video
+              className="lp-screen__video"
+              src="/demo.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              aria-label="Demo of the tool auditing a design system token set"
+            />
           </div>
         </section>
 
@@ -138,9 +147,7 @@ export default function LandingPage() {
                 <span className="lp-idx">{s.idx}</span>
                 <h3 className="lp-h3">{s.title}</h3>
                 <p className="lp-body">{s.body}</p>
-                <div className="lp-shot" role="img" aria-label={`Screenshot: ${s.title}`}>
-                  {s.shot}
-                </div>
+                <img className="lp-shot" src={s.img} alt={s.alt} />
               </div>
             ))}
           </div>

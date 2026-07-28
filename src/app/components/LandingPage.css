@@ -428,3 +428,34 @@ section.lp-band--ink {
 .lp .lp-audit__needs {
   color: var(--tca-pass);
 }
+
+/* ==================================================================
+   Real media. Images and video fill their frames at a fixed 16:9,
+   cropping rather than resizing the frame, so every card matches
+   regardless of source dimensions.
+   ================================================================== */
+
+.lp-screen__video,
+img.lp-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center top;
+  background: var(--tca-paper-alt);
+}
+
+/* The step images keep their border; the video sits inside the
+   browser chrome frame so it needs none of its own. */
+img.lp-shot {
+  margin-top: 26px;
+  border: var(--tca-hair) solid var(--tca-rule);
+}
+
+.lp-screen__video {
+  border: 0;
+}
+
+/* If a crop puts the important part off-centre, override per image:
+   img.lp-shot[src*="step-2"] { object-position: center center; } */
