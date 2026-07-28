@@ -2,8 +2,8 @@ import { useState, useRef } from 'react';
 import { FileCode2, Hash, Variable, Loader2, AlertCircle, Shield } from 'lucide-react';
 import type { ParseError } from '../types';
 import { getSampleForFormat } from '../utils/sampleData';
-import { SelfAudit } from './SelfAudit';
-import { BuiltBy } from './BuiltBy';
+import { AppHeader } from './AppHeader';
+import { AppFooter } from './AppFooter';
 
 interface PasteScreenProps {
   format: 'json' | 'css' | 'hex';
@@ -50,13 +50,14 @@ export function PasteScreen({ format, value, parseStatus, parseError, onFormatCh
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4">
-        <div className="max-w-3xl mx-auto">
+      <header className="bg-card border-b border-border">
+        <AppHeader step="input" />
+        <div className="max-w-3xl mx-auto px-4 pb-6 sm:px-6">
           <h1 className="text-[#1B3A5C]" style={{ fontWeight: 600, fontSize: '1.25rem', lineHeight: 1.4 }}>
-            Token Contrast Auditor
+            Paste your colour tokens
           </h1>
           <p className="text-muted-foreground mt-0.5" style={{ fontSize: '0.875rem' }}>
-            Find unsafe foreground and background token pairs before they reach production.
+            Find unsafe foreground/background pairs before they reach production. Supports JSON, CSS custom properties, and hex lists.
           </p>
         </div>
       </header>
@@ -228,12 +229,7 @@ export function PasteScreen({ format, value, parseStatus, parseError, onFormatCh
         </div>
       </main>
 
-      <footer className="border-t border-border px-6 py-3">
-        <div className="max-w-3xl mx-auto flex flex-col items-center gap-1.5">
-          <SelfAudit />
-          <BuiltBy />
-        </div>
-      </footer>
+      <AppFooter />
     </div>
   );
 }

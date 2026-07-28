@@ -1,5 +1,7 @@
-import { ChevronLeft, Info, AlertTriangle } from 'lucide-react';
+import { Info, AlertTriangle } from 'lucide-react';
 import type { AppToken, Role } from '../types';
+import { AppHeader } from './AppHeader';
+import { AppFooter } from './AppFooter';
 
 interface RolesScreenProps {
   tokens: AppToken[];
@@ -33,26 +35,15 @@ export function RolesScreen({ tokens, onRoleChange, onStartAudit, onBack }: Role
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border bg-card px-4 py-4 sm:px-6">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2 rounded transition-colors"
-            style={{ fontSize: '0.875rem', minHeight: '44px', minWidth: '44px' }}
-            aria-label="Back to token input"
-          >
-            <ChevronLeft size={16} aria-hidden="true" />
-            Back
-          </button>
-          <div className="h-5 w-px bg-border" aria-hidden="true" />
-          <div>
-            <h1 style={{ fontWeight: 600, fontSize: '1rem', lineHeight: 1.4, color: '#1B3A5C' }}>
-              Review inferred token roles
-            </h1>
-            <p className="text-muted-foreground" style={{ fontSize: '0.8125rem' }}>
-              {tokens.length} tokens — {textCount} foreground, {bgCount} background
-            </p>
-          </div>
+      <header className="bg-card border-b border-border">
+        <AppHeader step="review" onBackToInput={onBack} />
+        <div className="max-w-4xl mx-auto px-4 pb-6 sm:px-6">
+          <h1 style={{ fontWeight: 600, fontSize: '1rem', lineHeight: 1.4, color: '#1B3A5C' }}>
+            Review inferred token roles
+          </h1>
+          <p className="text-muted-foreground" style={{ fontSize: '0.8125rem' }}>
+            {tokens.length} tokens — {textCount} foreground, {bgCount} background
+          </p>
         </div>
       </header>
 
@@ -167,6 +158,8 @@ export function RolesScreen({ tokens, onRoleChange, onStartAudit, onBack }: Role
           </p>
         )}
       </div>
+
+      <AppFooter />
     </div>
   );
 }

@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react';
 import {
-  ChevronLeft, Copy, Download, CheckCircle2, RotateCcw, Menu, X
+  Copy, Download, CheckCircle2, RotateCcw, Menu, X
 } from 'lucide-react';
 import type { AppToken, Context, Level, ContrastPair } from '../types';
 import { contrastRatio, getThreshold, getVerdict, findNearestPassing } from '../utils/contrast';
 import { TokenQueue } from './TokenQueue';
 import { ContrastTable } from './ContrastTable';
-import { SelfAudit } from './SelfAudit';
-import { BuiltBy } from './BuiltBy';
+import { AppHeader } from './AppHeader';
+import { AppFooter } from './AppFooter';
 
 interface AuditWorkspaceProps {
   tokens: AppToken[];
@@ -171,122 +171,108 @@ export function AuditWorkspace({
   return (
     <div className="min-h-screen bg-background flex flex-col" style={{ maxHeight: '100dvh', overflow: 'hidden' }}>
       {/* Top bar */}
-      <header className="border-b border-border bg-card px-4 py-3 sm:px-6 shrink-0">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2 rounded transition-colors"
-            style={{ fontSize: '0.875rem', minHeight: '44px', minWidth: '44px' }}
-            aria-label="Back to role review"
-          >
-            <ChevronLeft size={16} aria-hidden="true" />
-            <span className="hidden sm:inline">Back</span>
-          </button>
-          <div className="h-5 w-px bg-border hidden sm:block" aria-hidden="true" />
-          <span style={{ fontWeight: 600, fontSize: '0.9375rem', color: '#1B3A5C' }} className="hidden sm:block">
-            Token Contrast Auditor
-          </span>
-          <span style={{ fontWeight: 600, fontSize: '0.9375rem', color: '#1B3A5C' }} className="sm:hidden">
-            Audit
-          </span>
+      <header className="border-b border-border bg-card shrink-0">
+        <AppHeader step="results" onBackToInput={onBack} />
+        <div className="px-4 pb-3 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-2">
+              {/* Context selector */}
+              <div className="hidden md:flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
+                {CONTEXT_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => { onContextChange(opt.value); setExpandedKey(null); }}
+                    aria-pressed={context === opt.value}
+                    title={opt.description}
+                    className={[
+                      'rounded px-3 py-1.5 transition-colors',
+                      'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2',
+                      context === opt.value
+                        ? 'bg-white text-[#1B3A5C] shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground',
+                    ].join(' ')}
+                    style={{ fontSize: '0.8125rem', fontWeight: context === opt.value ? 500 : 400, minHeight: '36px' }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
 
-          <div className="ml-auto flex items-center gap-2">
-            {/* Context selector */}
-            <div className="hidden md:flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
+              {/* Level selector */}
+              <div className="hidden md:flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
+                {(['AA', 'AAA'] as Level[]).map(l => (
+                  <button
+                    key={l}
+                    onClick={() => { onLevelChange(l); setExpandedKey(null); }}
+                    aria-pressed={level === l}
+                    className={[
+                      'rounded px-3 py-1.5 transition-colors',
+                      'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2',
+                      level === l
+                        ? 'bg-white text-[#1B3A5C] shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground',
+                    ].join(' ')}
+                    style={{ fontSize: '0.8125rem', fontWeight: level === l ? 500 : 400, minHeight: '36px' }}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+
+              {/* Mobile queue toggle */}
+              <button
+                onClick={() => setMobileQueueOpen(v => !v)}
+                className="md:hidden flex items-center gap-1.5 rounded border border-border px-3 py-2 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2 transition-colors"
+                style={{ fontSize: '0.8125rem', minHeight: '44px' }}
+                aria-expanded={mobileQueueOpen}
+                aria-controls="mobile-queue"
+              >
+                {mobileQueueOpen ? <X size={14} aria-hidden="true" /> : <Menu size={14} aria-hidden="true" />}
+                Tokens
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile context/level controls */}
+          <div className="md:hidden flex items-center gap-2 mt-2 flex-wrap">
+            <div className="flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
               {CONTEXT_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
                   onClick={() => { onContextChange(opt.value); setExpandedKey(null); }}
                   aria-pressed={context === opt.value}
-                  title={opt.description}
                   className={[
-                    'rounded px-3 py-1.5 transition-colors',
+                    'rounded px-2 py-1 transition-colors',
                     'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2',
                     context === opt.value
                       ? 'bg-white text-[#1B3A5C] shadow-sm'
                       : 'text-muted-foreground hover:text-foreground',
                   ].join(' ')}
-                  style={{ fontSize: '0.8125rem', fontWeight: context === opt.value ? 500 : 400, minHeight: '36px' }}
+                  style={{ fontSize: '0.75rem', fontWeight: context === opt.value ? 500 : 400, minHeight: '32px' }}
                 >
                   {opt.label}
                 </button>
               ))}
             </div>
-
-            {/* Level selector */}
-            <div className="hidden md:flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
+            <div className="flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
               {(['AA', 'AAA'] as Level[]).map(l => (
                 <button
                   key={l}
                   onClick={() => { onLevelChange(l); setExpandedKey(null); }}
                   aria-pressed={level === l}
                   className={[
-                    'rounded px-3 py-1.5 transition-colors',
+                    'rounded px-2 py-1 transition-colors',
                     'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2',
                     level === l
                       ? 'bg-white text-[#1B3A5C] shadow-sm'
                       : 'text-muted-foreground hover:text-foreground',
                   ].join(' ')}
-                  style={{ fontSize: '0.8125rem', fontWeight: level === l ? 500 : 400, minHeight: '36px' }}
+                  style={{ fontSize: '0.75rem', fontWeight: level === l ? 500 : 400, minHeight: '32px' }}
                 >
                   {l}
                 </button>
               ))}
             </div>
-
-            {/* Mobile queue toggle */}
-            <button
-              onClick={() => setMobileQueueOpen(v => !v)}
-              className="md:hidden flex items-center gap-1.5 rounded border border-border px-3 py-2 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2 transition-colors"
-              style={{ fontSize: '0.8125rem', minHeight: '44px' }}
-              aria-expanded={mobileQueueOpen}
-              aria-controls="mobile-queue"
-            >
-              {mobileQueueOpen ? <X size={14} aria-hidden="true" /> : <Menu size={14} aria-hidden="true" />}
-              Tokens
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile context/level controls */}
-        <div className="md:hidden flex items-center gap-2 mt-2 flex-wrap">
-          <div className="flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
-            {CONTEXT_OPTIONS.map(opt => (
-              <button
-                key={opt.value}
-                onClick={() => { onContextChange(opt.value); setExpandedKey(null); }}
-                aria-pressed={context === opt.value}
-                className={[
-                  'rounded px-2 py-1 transition-colors',
-                  'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2',
-                  context === opt.value
-                    ? 'bg-white text-[#1B3A5C] shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground',
-                ].join(' ')}
-                style={{ fontSize: '0.75rem', fontWeight: context === opt.value ? 500 : 400, minHeight: '32px' }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1 rounded border border-border p-0.5 bg-muted/40">
-            {(['AA', 'AAA'] as Level[]).map(l => (
-              <button
-                key={l}
-                onClick={() => { onLevelChange(l); setExpandedKey(null); }}
-                aria-pressed={level === l}
-                className={[
-                  'rounded px-2 py-1 transition-colors',
-                  'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2',
-                  level === l
-                    ? 'bg-white text-[#1B3A5C] shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground',
-                ].join(' ')}
-                style={{ fontSize: '0.75rem', fontWeight: level === l ? 500 : 400, minHeight: '32px' }}
-              >
-                {l}
-              </button>
-            ))}
           </div>
         </div>
       </header>
@@ -464,13 +450,9 @@ export function AuditWorkspace({
             </div>
           )}
 
-          {/* Footer */}
-          <footer className="border-t border-border px-4 py-3 sm:px-6 mt-auto">
-            <div className="flex flex-col gap-1.5">
-              <SelfAudit />
-              <BuiltBy />
-            </div>
-          </footer>
+          <div className="mt-auto">
+            <AppFooter />
+          </div>
         </main>
       </div>
     </div>
