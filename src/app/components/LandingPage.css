@@ -1,0 +1,430 @@
+/* ==================================================================
+   Landing page. All values come from brand.css.
+   Nothing here defines a raw colour, font, or radius.
+   ================================================================== */
+
+.lp {
+  max-width: 1240px;
+  margin: 0 auto;
+  border-left: var(--tca-hair) solid var(--tca-rule);
+  border-right: var(--tca-hair) solid var(--tca-rule);
+}
+
+.lp-band {
+  border-bottom: var(--tca-hair) solid var(--tca-rule);
+  padding: var(--tca-band-y) var(--tca-gut);
+}
+
+.lp-band--tight { padding-top: 72px; padding-bottom: 72px; }
+
+.lp .lp-band--ink,
+section.lp-band--ink {
+  background-color: var(--tca-ink);
+  color: var(--tca-paper);
+  border-bottom-color: var(--tca-ink);
+}
+
+.lp-center { text-align: center; }
+
+/* ------------------------------------------------------------ type */
+
+.lp-label {
+  font-family: var(--tca-mono);
+  font-size: var(--tca-fs-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tca-muted);
+  margin: 0 0 40px;
+}
+
+.lp-band--ink .lp-label { color: #9A9A9A; }
+
+.lp-display {
+  font-family: var(--tca-serif);
+  font-weight: 400;
+  font-size: var(--tca-fs-display);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0 auto;
+  max-width: 15ch;
+}
+
+.lp-display em { font-style: italic; }
+
+.lp-h2 {
+  font-family: var(--tca-serif);
+  font-weight: 400;
+  font-size: var(--tca-fs-h2);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  margin: 0 auto;
+  max-width: 20ch;
+}
+
+.lp-h3 {
+  font-size: var(--tca-fs-h3);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  margin: 0 0 10px;
+}
+
+.lp-lead {
+  font-size: var(--tca-fs-lead);
+  line-height: 1.62;
+  color: var(--tca-muted);
+  margin: 22px auto 0;
+  max-width: 54ch;
+}
+
+.lp-band--ink .lp-lead { color: #9A9A9A; }
+
+.lp-body {
+  font-size: var(--tca-fs-body);
+  line-height: 1.6;
+  color: var(--tca-muted);
+  margin: 0;
+}
+
+.lp-act {
+  font-family: var(--tca-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tca-muted);
+  margin: 0 0 4px;
+}
+
+/* --------------------------------------------------------- buttons */
+
+.lp-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 44px;
+  flex-wrap: wrap;
+}
+
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 26px;
+  font-family: var(--tca-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: var(--tca-hair) solid var(--tca-ink);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.lp-btn--solid { background: var(--tca-ink); color: var(--tca-paper); }
+.lp-btn--solid:hover { background: var(--tca-ink-soft); }
+.lp-btn--line { background: transparent; color: var(--tca-ink); }
+.lp-btn--line:hover { background: var(--tca-paper-alt); }
+
+.lp-band--ink .lp-btn--solid {
+  background: var(--tca-paper);
+  color: var(--tca-ink);
+  border-color: var(--tca-paper);
+}
+
+.lp-band--ink .lp-btn:focus-visible { outline-color: var(--tca-paper); }
+
+/* ------------------------------------------------------ crop marks */
+
+.lp-marked { position: relative; }
+
+.lp-marked::before,
+.lp-marked::after,
+.lp-tick {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  pointer-events: none;
+}
+
+.lp-marked::before {
+  top: -6px; left: -6px;
+  border-top: var(--tca-hair) solid var(--tca-ink);
+  border-left: var(--tca-hair) solid var(--tca-ink);
+}
+
+.lp-marked::after {
+  top: -6px; right: -6px;
+  border-top: var(--tca-hair) solid var(--tca-ink);
+  border-right: var(--tca-hair) solid var(--tca-ink);
+}
+
+.lp-tick--bl {
+  bottom: -6px; left: -6px;
+  border-bottom: var(--tca-hair) solid var(--tca-ink);
+  border-left: var(--tca-hair) solid var(--tca-ink);
+}
+
+.lp-tick--br {
+  bottom: -6px; right: -6px;
+  border-bottom: var(--tca-hair) solid var(--tca-ink);
+  border-right: var(--tca-hair) solid var(--tca-ink);
+}
+
+/* ----------------------------------------------------------- video */
+
+.lp-screen {
+  margin: 76px auto 0;
+  max-width: 960px;
+  border: var(--tca-hair) solid var(--tca-rule);
+}
+
+.lp-screen__bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 14px;
+  border-bottom: var(--tca-hair) solid var(--tca-rule);
+}
+
+.lp-screen__dot {
+  width: 7px;
+  height: 7px;
+  border: var(--tca-hair) solid var(--tca-rule);
+}
+
+.lp-screen__url {
+  flex: 1;
+  text-align: center;
+  font-family: var(--tca-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--tca-muted);
+}
+
+.lp-screen__body,
+.lp-shot {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--tca-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tca-muted);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--tca-paper-alt) 0 10px,
+    var(--tca-paper) 10px 20px
+  );
+}
+
+.lp-screen__body { font-size: 11px; }
+
+.lp-shot {
+  font-size: 10px;
+  margin-top: 26px;
+  border: var(--tca-hair) solid var(--tca-rule);
+}
+
+/* ------------------------------------------------------------ grid */
+
+.lp-cells {
+  display: grid;
+  margin-top: 76px;
+  border-top: var(--tca-hair) solid var(--tca-rule);
+  border-left: var(--tca-hair) solid var(--tca-rule);
+  text-align: left;
+}
+
+.lp-cells--3 { grid-template-columns: repeat(3, 1fr); }
+.lp-cells--2 { grid-template-columns: repeat(2, 1fr); }
+
+.lp-cell {
+  display: flex;
+  flex-direction: column;
+  padding: var(--tca-cell-y) var(--tca-cell-x);
+  border-right: var(--tca-hair) solid var(--tca-rule);
+  border-bottom: var(--tca-hair) solid var(--tca-rule);
+}
+
+.lp-stat {
+  font-family: var(--tca-serif);
+  font-size: 4.25rem;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.lp-stat__unit {
+  font-family: var(--tca-mono);
+  font-size: var(--tca-fs-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tca-muted);
+  margin: 18px 0 10px;
+}
+
+.lp-idx {
+  font-family: var(--tca-mono);
+  font-size: var(--tca-fs-label);
+  letter-spacing: 0.14em;
+  color: var(--tca-muted);
+  margin-bottom: 22px;
+}
+
+/* -------------------------------------------------------- verdicts */
+
+.lp-verdicts {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.lp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  font-family: var(--tca-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: var(--tca-hair) solid currentColor;
+}
+
+.lp-chip__dot { width: 6px; height: 6px; background: currentColor; }
+.lp-chip--pass { color: var(--tca-pass); }
+.lp-chip--warn { color: var(--tca-warn); }
+.lp-chip--fail { color: var(--tca-fail); }
+
+/* ------------------------------------------------------------ list */
+
+.lp-list { list-style: none; padding: 0; margin: 20px 0 0; }
+
+.lp-list li {
+  position: relative;
+  padding-left: 18px;
+  font-size: var(--tca-fs-body);
+  line-height: 1.6;
+  color: var(--tca-muted);
+  margin-bottom: 9px;
+}
+
+.lp-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  background: var(--tca-ink);
+}
+
+/* ------------------------------------------------------ self audit */
+
+.lp-audit {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 68px;
+  border-top: var(--tca-hair) solid #333;
+  border-left: var(--tca-hair) solid #333;
+}
+
+.lp-audit__item {
+  padding: 34px 28px;
+  border-right: var(--tca-hair) solid #333;
+  border-bottom: var(--tca-hair) solid #333;
+  text-align: left;
+}
+
+.lp-audit__label {
+  display: block;
+  font-family: var(--tca-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9A9A9A;
+  margin-bottom: 16px;
+}
+
+.lp-audit__fig {
+  font-family: var(--tca-serif);
+  font-size: 3.5rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.lp-audit__unit {
+  font-family: var(--tca-mono);
+  font-size: 0.875rem;
+  color: #9A9A9A;
+  margin-left: 3px;
+}
+
+.lp-audit__needs {
+  display: block;
+  font-family: var(--tca-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--tca-pass-on-ink);
+  margin-top: 14px;
+}
+
+/* ------------------------------------------------------ responsive */
+
+@media (max-width: 880px) {
+  .lp-cells--3,
+  .lp-cells--2,
+  .lp-audit { grid-template-columns: 1fr; }
+}
+
+/* ==================================================================
+   Self-audit band, on white.
+   Appended last so it overrides the earlier .lp-band--ink rules.
+   ================================================================== */
+
+.lp .lp-band--ink,
+section.lp-band--ink {
+  background-color: var(--tca-paper);
+  color: var(--tca-ink);
+  border-top: var(--tca-hair) solid var(--tca-ink);
+  border-bottom-color: var(--tca-rule);
+}
+
+.lp .lp-band--ink .lp-label,
+.lp .lp-band--ink .lp-lead {
+  color: var(--tca-muted);
+}
+
+.lp .lp-band--ink .lp-h2 {
+  color: var(--tca-ink);
+}
+
+.lp .lp-band--ink .lp-btn--solid {
+  background: var(--tca-ink);
+  color: var(--tca-paper);
+  border-color: var(--tca-ink);
+}
+
+.lp .lp-band--ink .lp-btn:focus-visible {
+  outline-color: var(--tca-ink);
+}
+
+.lp .lp-audit {
+  border-top-color: var(--tca-rule);
+  border-left-color: var(--tca-rule);
+}
+
+.lp .lp-audit__item {
+  border-right-color: var(--tca-rule);
+  border-bottom-color: var(--tca-rule);
+}
+
+.lp .lp-audit__label,
+.lp .lp-audit__unit {
+  color: var(--tca-muted);
+}
+
+.lp .lp-audit__needs {
+  color: var(--tca-pass);
+}

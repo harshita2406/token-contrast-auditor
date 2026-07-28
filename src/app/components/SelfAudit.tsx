@@ -16,8 +16,7 @@ export function SelfAudit() {
   const [expanded, setExpanded] = useState(false);
   const results = useMemo(() => runSelfAudit(), []);
   const allPass = results.every(r => r.pass);
-  const color = allPass ? '#047857' : '#B91C1C';
-  const bg = allPass ? '#ECFDF5' : '#FEF2F2';
+  const color = allPass ? 'var(--tca-pass)' : 'var(--tca-fail)';
 
   return (
     <div className="relative inline-block">
@@ -27,10 +26,17 @@ export function SelfAudit() {
         onKeyDown={(e) => { if (e.key === 'Escape') setExpanded(false); }}
         aria-expanded={expanded}
         aria-controls={panelId}
-        className="inline-flex items-center gap-1.5 rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2 cursor-pointer"
-        style={{ fontSize: '0.75rem', fontWeight: 500, color, backgroundColor: bg, padding: '4px 10px 4px 8px' }}
+        className="inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+        style={{
+          fontSize: '0.75rem',
+          fontWeight: 500,
+          color,
+          background: 'var(--tca-paper)',
+          border: `var(--tca-hair) solid ${color}`,
+          padding: '4px 10px 4px 8px',
+        }}
       >
-        <span className="rounded-full shrink-0" style={{ width: '6px', height: '6px', backgroundColor: color }} aria-hidden="true" />
+        <span className="shrink-0" style={{ width: '6px', height: '6px', backgroundColor: color }} aria-hidden="true" />
         {allPass ? 'UI verified at WCAG AA' : 'UI fails WCAG AA'}
         {expanded ? <ChevronUp size={12} aria-hidden="true" /> : <ChevronDown size={12} aria-hidden="true" />}
       </button>

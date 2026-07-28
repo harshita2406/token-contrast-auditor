@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AuditApp from './AuditApp';
-import { LandingPage } from './components/LandingPage';
+import LandingPage from './components/LandingPage';
 
 export default function App() {
   return (

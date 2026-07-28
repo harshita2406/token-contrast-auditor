@@ -10,39 +10,37 @@ interface ContrastTableProps {
   onApplyCorrection: (tokenId: string, correctedHex: string) => void;
 }
 
+// Verdict colours are the only colour in the interface — pass/warn/fail from
+// brand.css. LargeTextOnly and NearMiss both read as "warn", matching the
+// landing page's verdict chips; the icon still tells them apart.
 const VERDICT_META: Record<Verdict, {
   label: string;
   Icon: React.ElementType;
-  color: string;
-  bg: string;
+  className: string;
   action: string;
 }> = {
   Pass: {
     label: 'Pass',
     Icon: CheckCircle2,
-    color: '#047857',
-    bg: '#ECFDF5',
+    className: 'tca-chip--pass',
     action: 'No action needed.',
   },
   LargeTextOnly: {
     label: 'Large text only',
     Icon: BookOpen,
-    color: '#6D28D9',
-    bg: '#EDE9FE',
+    className: 'tca-chip--warn',
     action: 'Acceptable for headings and large text (≥24px regular or ≥18.7px bold).',
   },
   NearMiss: {
     label: 'Near miss',
     Icon: AlertTriangle,
-    color: '#B45309',
-    bg: '#FFFBEB',
+    className: 'tca-chip--warn',
     action: 'A small lightness adjustment may fix this pair — see suggestion.',
   },
   Fail: {
     label: 'Fail',
     Icon: XCircle,
-    color: '#B91C1C',
-    bg: '#FEF2F2',
+    className: 'tca-chip--fail',
     action: 'Choose a different token or apply the suggested correction.',
   },
 };
@@ -79,42 +77,26 @@ export function ContrastTable({ selectedToken, pairs, expandedKey, onExpandRow, 
   return (
     <div className="mt-4">
       {/* Summary */}
-      <p className="text-muted-foreground mb-3" style={{ fontSize: '0.8125rem' }}>
+      <p className="mb-3" style={{ fontSize: '0.8125rem', color: 'var(--tca-muted)' }}>
         {pairs.length} background{pairs.length !== 1 ? 's' : ''} checked —{' '}
-        <span style={{ color: '#047857', fontWeight: 500 }}>{passCount} pass</span>,{' '}
-        <span style={{ color: failCount > 0 ? '#B91C1C' : '#5E5E5E', fontWeight: failCount > 0 ? 500 : 400 }}>
+        <span style={{ color: 'var(--tca-pass)', fontWeight: 500 }}>{passCount} pass</span>,{' '}
+        <span style={{ color: failCount > 0 ? 'var(--tca-fail)' : 'var(--tca-muted)', fontWeight: failCount > 0 ? 500 : 400 }}>
           {failCount} need attention
         </span>
       </p>
 
       {/* Responsive wrapper */}
-      <div className="overflow-x-auto rounded border border-border">
-        <table
-          className="w-full border-collapse"
-          style={{ fontSize: '0.875rem' }}
-          aria-label={`Contrast pairs for ${selectedToken.name}`}
-        >
+      <div className="overflow-x-auto" style={{ border: 'var(--tca-hair) solid var(--tca-rule)' }}>
+        <table className="tca-table" aria-label={`Contrast pairs for ${selectedToken.name}`}>
           <thead>
-            <tr className="bg-muted/40 border-b border-border">
-              <th scope="col" className="text-left px-4 py-2.5 text-muted-foreground" style={{ fontWeight: 500, minWidth: '100px' }}>
-                Sample
-              </th>
-              <th scope="col" className="text-left px-4 py-2.5 text-muted-foreground" style={{ fontWeight: 500, minWidth: '160px' }}>
-                Background
-              </th>
-              <th scope="col" className="text-left px-4 py-2.5 text-muted-foreground" style={{ fontWeight: 500, minWidth: '80px' }}>
-                Ratio
-              </th>
-              <th scope="col" className="text-left px-4 py-2.5 text-muted-foreground hidden sm:table-cell" style={{ fontWeight: 500, minWidth: '80px' }}>
-                Required
-              </th>
-              <th scope="col" className="text-left px-4 py-2.5 text-muted-foreground" style={{ fontWeight: 500, minWidth: '140px' }}>
-                Verdict
-              </th>
-              <th scope="col" className="text-left px-4 py-2.5 text-muted-foreground hidden md:table-cell" style={{ fontWeight: 500 }}>
-                Recommended action
-              </th>
-              <th scope="col" className="px-4 py-2.5" style={{ width: '48px' }}>
+            <tr>
+              <th scope="col" style={{ minWidth: '100px' }}>Sample</th>
+              <th scope="col" style={{ minWidth: '160px' }}>Background</th>
+              <th scope="col" style={{ minWidth: '80px' }}>Ratio</th>
+              <th scope="col" className="hidden sm:table-cell" style={{ minWidth: '80px' }}>Required</th>
+              <th scope="col" style={{ minWidth: '140px' }}>Verdict</th>
+              <th scope="col" className="hidden md:table-cell">Recommended action</th>
+              <th scope="col" style={{ width: '48px' }}>
                 <span className="sr-only">Expand</span>
               </th>
             </tr>
@@ -134,17 +116,11 @@ export function ContrastTable({ selectedToken, pairs, expandedKey, onExpandRow, 
                     aria-label={`${selectedToken.name} on ${pair.bgToken.name}: ${formatRatio(pair.ratio)}, ${meta.label}`}
                     onKeyDown={(e) => handleRowKeyDown(e, index)}
                     onClick={() => canExpand && onExpandRow(isExpanded ? null : key)}
-                    className={[
-                      'border-b border-border transition-colors',
-                      isExpanded ? 'bg-[#F8F7FF]' : 'hover:bg-muted/30',
-                      canExpand ? 'cursor-pointer' : '',
-                      'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-[-2px]',
-                    ].join(' ')}
+                    className={[isExpanded ? 'tca-row--active' : '', canExpand ? 'cursor-pointer' : ''].join(' ')}
                   >
                     {/* Sample */}
-                    <td className="px-4 py-3">
+                    <td>
                       <div
-                        className="rounded"
                         style={{
                           backgroundColor: pair.bgToken.hex,
                           color: pair.fgHex,
@@ -152,6 +128,7 @@ export function ContrastTable({ selectedToken, pairs, expandedKey, onExpandRow, 
                           minWidth: '80px',
                           display: 'inline-block',
                           lineHeight: 1.4,
+                          border: 'var(--tca-hair) solid var(--tca-rule)',
                         }}
                         aria-hidden="true"
                       >
@@ -161,73 +138,48 @@ export function ContrastTable({ selectedToken, pairs, expandedKey, onExpandRow, 
                     </td>
 
                     {/* Background token */}
-                    <td className="px-4 py-3">
+                    <td>
                       <div className="flex items-center gap-2">
-                        <span
-                          className="shrink-0 rounded-sm border border-border"
-                          style={{ width: '18px', height: '18px', backgroundColor: pair.bgToken.hex }}
-                          aria-hidden="true"
-                        />
+                        <span className="tca-swatch shrink-0" style={{ width: '18px', height: '18px', backgroundColor: pair.bgToken.hex }} aria-hidden="true" />
                         <div>
-                          <p className="text-foreground" style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.8125rem' }}>
-                            {pair.bgToken.name}
-                          </p>
-                          <p className="text-muted-foreground" style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.75rem' }}>
-                            {pair.bgToken.hex}
-                          </p>
+                          <p style={{ fontFamily: 'var(--tca-mono)', fontSize: '0.8125rem' }}>{pair.bgToken.name}</p>
+                          <p style={{ fontFamily: 'var(--tca-mono)', fontSize: '0.75rem', color: 'var(--tca-muted)' }}>{pair.bgToken.hex}</p>
                         </div>
                       </div>
                     </td>
 
                     {/* Actual ratio */}
-                    <td className="px-4 py-3">
-                      <span
-                        className="text-foreground"
-                        style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.875rem', fontWeight: 500 }}
-                      >
+                    <td>
+                      <span style={{ fontFamily: 'var(--tca-mono)', fontSize: '0.875rem', fontWeight: 500 }}>
                         {formatRatio(pair.ratio)}
                       </span>
                     </td>
 
                     {/* Required ratio */}
-                    <td className="px-4 py-3 hidden sm:table-cell">
-                      <span
-                        className="text-muted-foreground"
-                        style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.875rem' }}
-                      >
+                    <td className="hidden sm:table-cell">
+                      <span style={{ fontFamily: 'var(--tca-mono)', fontSize: '0.875rem', color: 'var(--tca-muted)' }}>
                         {formatRatio(pair.threshold)}
                       </span>
                     </td>
 
                     {/* Verdict */}
-                    <td className="px-4 py-3">
-                      <span
-                        className="inline-flex items-center gap-1.5 rounded px-2 py-1"
-                        style={{
-                          color: meta.color,
-                          backgroundColor: meta.bg,
-                          fontSize: '0.8125rem',
-                          fontWeight: 500,
-                        }}
-                      >
-                        <meta.Icon size={13} aria-hidden="true" />
+                    <td>
+                      <span className={`tca-chip ${meta.className}`}>
+                        <span className="tca-chip__dot" aria-hidden="true" />
+                        <meta.Icon size={12} aria-hidden="true" />
                         {meta.label}
                       </span>
                     </td>
 
                     {/* Action text */}
-                    <td className="px-4 py-3 text-muted-foreground hidden md:table-cell" style={{ fontSize: '0.8125rem' }}>
+                    <td className="hidden md:table-cell" style={{ fontSize: '0.8125rem', color: 'var(--tca-muted)' }}>
                       {meta.action}
                     </td>
 
                     {/* Expand toggle */}
-                    <td className="px-4 py-3 text-right">
+                    <td className="text-right">
                       {canExpand && (
-                        <span
-                          className="inline-flex items-center justify-center rounded text-muted-foreground"
-                          style={{ width: '28px', height: '28px' }}
-                          aria-hidden="true"
-                        >
+                        <span className="inline-flex items-center justify-center" style={{ width: '28px', height: '28px', color: 'var(--tca-muted)' }} aria-hidden="true">
                           {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                         </span>
                       )}
@@ -236,8 +188,8 @@ export function ContrastTable({ selectedToken, pairs, expandedKey, onExpandRow, 
 
                   {/* Correction expansion */}
                   {isExpanded && canExpand && (
-                    <tr className="bg-[#F8F7FF]">
-                      <td colSpan={7} className="px-4 pb-4 pt-0">
+                    <tr className="tca-row--active">
+                      <td colSpan={7} className="pb-4 pt-0">
                         <CorrectionPanel
                           fgToken={selectedToken}
                           fgHex={pair.fgHex}
@@ -279,19 +231,16 @@ function CorrectionPanel({ fgToken, fgHex, bgToken, correction, threshold, origi
   const hasCorrection = correction !== null;
 
   return (
-    <div
-      className="rounded border border-[#C4B5FD] bg-white p-4 mt-1"
-      style={{ fontSize: '0.875rem' }}
-    >
-      <p className="text-foreground mb-3" style={{ fontWeight: 500 }}>
-        Nearest passing colour for <span style={{ fontFamily: "'DM Mono', monospace" }}>{fgToken.name}</span> on{' '}
-        <span style={{ fontFamily: "'DM Mono', monospace" }}>{bgToken.name}</span>
+    <div className="tca-panel p-4 mt-1" style={{ fontSize: '0.875rem' }}>
+      <p className="mb-3" style={{ fontWeight: 500 }}>
+        Nearest passing colour for <span style={{ fontFamily: 'var(--tca-mono)' }}>{fgToken.name}</span> on{' '}
+        <span style={{ fontFamily: 'var(--tca-mono)' }}>{bgToken.name}</span>
       </p>
 
       {!hasCorrection ? (
-        <div className="flex gap-2.5 rounded border border-border bg-muted/40 p-3">
-          <XCircle size={15} className="shrink-0 text-muted-foreground mt-0.5" aria-hidden="true" />
-          <p className="text-muted-foreground" style={{ fontSize: '0.8125rem' }}>
+        <div className="tca-panel tca-panel--well flex gap-2.5 p-3">
+          <XCircle size={15} className="shrink-0 mt-0.5" style={{ color: 'var(--tca-muted)' }} aria-hidden="true" />
+          <p style={{ fontSize: '0.8125rem', color: 'var(--tca-muted)' }}>
             A lightness-only adjustment cannot make this pair pass at the required {threshold.toFixed(1)}:1 ratio.
             The hue and chroma would need to change too. Choose a different token.
           </p>
@@ -301,61 +250,57 @@ function CorrectionPanel({ fgToken, fgHex, bgToken, correction, threshold, origi
           {/* Before/after comparison */}
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div>
-              <p className="text-muted-foreground mb-1.5" style={{ fontSize: '0.75rem', fontWeight: 500 }}>Before</p>
+              <p className="tca-section-label mb-1.5" style={{ fontSize: '0.7rem' }}>Before</p>
               <div
-                className="rounded flex items-center justify-center border border-border"
-                style={{ backgroundColor: bgToken.hex, color: fgHex, height: '64px' }}
+                className="flex items-center justify-center"
+                style={{ backgroundColor: bgToken.hex, color: fgHex, height: '64px', border: 'var(--tca-hair) solid var(--tca-rule)' }}
                 aria-label={`Before: ${fgHex} on ${bgToken.hex}`}
               >
                 <span style={{ fontSize: '1.125rem', fontWeight: 500 }}>Aa Sample text</span>
               </div>
               <div className="mt-1.5 space-y-0.5">
-                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.75rem', color: '#5E5E5E' }}>
-                  {fgHex}
-                </p>
+                <p style={{ fontFamily: 'var(--tca-mono)', fontSize: '0.75rem', color: 'var(--tca-muted)' }}>{fgHex}</p>
               </div>
             </div>
             <div>
-              <p className="text-muted-foreground mb-1.5" style={{ fontSize: '0.75rem', fontWeight: 500 }}>After</p>
+              <p className="tca-section-label mb-1.5" style={{ fontSize: '0.7rem' }}>After</p>
               <div
-                className="rounded flex items-center justify-center border border-[#047857]"
-                style={{ backgroundColor: bgToken.hex, color: correction.hex, height: '64px' }}
+                className="flex items-center justify-center"
+                style={{ backgroundColor: bgToken.hex, color: correction.hex, height: '64px', border: '1px solid var(--tca-pass)' }}
                 aria-label={`After: ${correction.hex} on ${bgToken.hex}`}
               >
                 <span style={{ fontSize: '1.125rem', fontWeight: 500 }}>Aa Sample text</span>
               </div>
               <div className="mt-1.5 space-y-0.5">
-                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.75rem', color: '#5E5E5E' }}>
-                  {correction.hex}
-                </p>
+                <p style={{ fontFamily: 'var(--tca-mono)', fontSize: '0.75rem', color: 'var(--tca-muted)' }}>{correction.hex}</p>
               </div>
             </div>
           </div>
 
           {/* Stats row */}
-          <div className="flex flex-wrap gap-4 mb-4 p-3 rounded bg-muted/40 border border-border">
+          <div className="tca-panel tca-panel--well flex flex-wrap gap-4 mb-4 p-3">
             <div>
-              <p className="text-muted-foreground" style={{ fontSize: '0.75rem' }}>Ratio before</p>
-              <p style={{ fontFamily: "'DM Mono', monospace", fontWeight: 500, fontSize: '0.875rem', color: '#B91C1C' }}>
+              <p style={{ fontSize: '0.75rem', color: 'var(--tca-muted)' }}>Ratio before</p>
+              <p style={{ fontFamily: 'var(--tca-mono)', fontWeight: 500, fontSize: '0.875rem', color: 'var(--tca-fail)' }}>
                 {originalRatio.toFixed(1)}:1
               </p>
             </div>
             <div>
-              <p className="text-muted-foreground" style={{ fontSize: '0.75rem' }}>Ratio after</p>
-              <p style={{ fontFamily: "'DM Mono', monospace", fontWeight: 500, fontSize: '0.875rem', color: '#047857' }}>
+              <p style={{ fontSize: '0.75rem', color: 'var(--tca-muted)' }}>Ratio after</p>
+              <p style={{ fontFamily: 'var(--tca-mono)', fontWeight: 500, fontSize: '0.875rem', color: 'var(--tca-pass)' }}>
                 {correction.ratio.toFixed(1)}:1
               </p>
             </div>
             <div>
-              <p className="text-muted-foreground" style={{ fontSize: '0.75rem' }}>Lightness change</p>
-              <p style={{ fontFamily: "'DM Mono', monospace", fontWeight: 500, fontSize: '0.875rem' }}>
+              <p style={{ fontSize: '0.75rem', color: 'var(--tca-muted)' }}>Lightness change</p>
+              <p style={{ fontFamily: 'var(--tca-mono)', fontWeight: 500, fontSize: '0.875rem' }}>
                 {correction.deltaL > 0 ? '+' : ''}{(correction.deltaL * 100).toFixed(1)}%
               </p>
             </div>
           </div>
 
           {/* Caveat */}
-          <p className="text-muted-foreground mb-3" style={{ fontSize: '0.8125rem' }}>
+          <p className="mb-3" style={{ fontSize: '0.8125rem', color: 'var(--tca-muted)' }}>
             Correction holds hue and chroma constant, adjusting only lightness in OKLCH.
             Verify the result matches your design intent.
           </p>
@@ -365,20 +310,12 @@ function CorrectionPanel({ fgToken, fgHex, bgToken, correction, threshold, origi
       {/* Actions */}
       <div className="flex gap-2 mt-3">
         {hasCorrection && (
-          <button
-            onClick={() => onApply(correction.hex)}
-            className="flex items-center gap-1.5 rounded bg-[#1B3A5C] px-4 py-2 text-white hover:bg-[#142E4A] focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2 transition-colors"
-            style={{ fontSize: '0.875rem', fontWeight: 500, minHeight: '44px' }}
-          >
+          <button onClick={() => onApply(correction.hex)} className="tca-btn tca-btn--primary" style={{ minHeight: '44px' }}>
             <CheckCircle2 size={14} aria-hidden="true" />
             Apply correction
           </button>
         )}
-        <button
-          onClick={onCancel}
-          className="rounded border border-border px-4 py-2 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-2 transition-colors"
-          style={{ fontSize: '0.875rem', minHeight: '44px' }}
-        >
+        <button onClick={onCancel} className="tca-btn tca-btn--secondary" style={{ minHeight: '44px' }}>
           {hasCorrection ? 'Cancel' : 'Close'}
         </button>
       </div>

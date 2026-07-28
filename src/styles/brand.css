@@ -1,0 +1,112 @@
+/* ==================================================================
+   BRAND TOKENS — single source of truth
+   Import once in src/main.tsx, before every other stylesheet:
+     import "./styles/brand.css";
+   Nothing in the app should hardcode a colour, font, or radius.
+   ================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  /* ---- surfaces --------------------------------------------- */
+  --tca-paper:        #FFFFFF;   /* page and card background          */
+  --tca-paper-alt:    #FAFAFA;   /* faint fill, hatch, hover          */
+  --tca-ink:          #0A0A0A;   /* primary text, solid buttons       */
+  --tca-ink-soft:     #2A2A2A;   /* hover state on solid buttons      */
+  --tca-rule:         #E4E4E4;   /* every border on the page          */
+  --tca-rule-strong:  #C9C9C9;   /* emphasis borders, inputs          */
+  --tca-muted:        #6B6B6B;   /* secondary text — 5.33:1 on paper  */
+
+  /* ---- verdicts (the only colour in the product) -------------- */
+  --tca-pass:         #067647;   /* 5.69:1 on paper                   */
+  --tca-warn:         #B54708;   /* 5.43:1 on paper                   */
+  --tca-fail:         #B42318;   /* 6.57:1 on paper                   */
+  --tca-pass-on-ink:  #34D399;   /* pass mark on the dark band        */
+
+  /* ---- type --------------------------------------------------- */
+  --tca-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --tca-sans:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --tca-mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ---- scale -------------------------------------------------- */
+  --tca-fs-display: clamp(2.75rem, 6.2vw, 5.25rem);
+  --tca-fs-h2:      clamp(2rem, 3.8vw, 3.125rem);
+  --tca-fs-h3:      1.0625rem;
+  --tca-fs-lead:    1.0625rem;
+  --tca-fs-body:    0.875rem;
+  --tca-fs-label:   11px;
+
+  /* ---- spacing ------------------------------------------------ */
+  --tca-gut:        40px;
+  --tca-band-y:     104px;
+  --tca-cell-y:     36px;
+  --tca-cell-x:     32px;
+  --tca-page-max:   1240px;
+
+  /* ---- geometry ----------------------------------------------- */
+  --tca-radius:     0;
+  --tca-hair:       1px;
+}
+
+/* No curved corners anywhere in this product. */
+*,
+*::before,
+*::after {
+  border-radius: 0;
+}
+
+body {
+  font-family: var(--tca-sans);
+  color: var(--tca-ink);
+  background: var(--tca-paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The tool's shadcn theme also defines --muted, --border and friends.
+   Point those at the brand values so the existing components inherit
+   the rebrand without every class having to be rewritten. */
+:root {
+  --background:        var(--tca-paper);
+  --foreground:        var(--tca-ink);
+  --card:              var(--tca-paper);
+  --card-foreground:   var(--tca-ink);
+  --popover:           var(--tca-paper);
+  --popover-foreground: var(--tca-ink);
+  --primary:           var(--tca-ink);
+  --primary-foreground: var(--tca-paper);
+  --secondary:         var(--tca-paper-alt);
+  --secondary-foreground: var(--tca-ink);
+  --muted:             var(--tca-paper-alt);
+  --muted-foreground:  var(--tca-muted);
+  --accent:            var(--tca-paper-alt);
+  --accent-foreground: var(--tca-ink);
+  --destructive:       var(--tca-fail);
+  --destructive-foreground: var(--tca-paper);
+  --border:            var(--tca-rule);
+  --input:             var(--tca-rule-strong);
+  --ring:              var(--tca-ink);
+  --radius:            0;
+}
+
+/* Focus is always visible and always meets 3:1. */
+:focus-visible {
+  outline: 2px solid var(--tca-ink);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 880px) {
+  :root {
+    --tca-gut:    22px;
+    --tca-band-y: 68px;
+  }
+}

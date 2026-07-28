@@ -26,11 +26,14 @@ function getWorstVerdict(verdicts: Verdict[]): Verdict {
   return 'Pass';
 }
 
-const VERDICT_META: Record<Verdict, { label: string; Icon: React.ElementType; color: string; bg: string }> = {
-  Pass: { label: 'Passes all', Icon: CheckCircle2, color: '#047857', bg: '#ECFDF5' },
-  LargeTextOnly: { label: 'Large text only', Icon: BookOpen, color: '#6D28D9', bg: '#EDE9FE' },
-  NearMiss: { label: 'Near miss', Icon: AlertTriangle, color: '#B45309', bg: '#FFFBEB' },
-  Fail: { label: 'Failures', Icon: XCircle, color: '#B91C1C', bg: '#FEF2F2' },
+// Verdict colours are the only colour in the interface — pass/warn/fail from
+// brand.css. LargeTextOnly and NearMiss both read as "warn", same as the
+// landing page's verdict chips; the icon still tells them apart.
+const VERDICT_META: Record<Verdict, { label: string; Icon: React.ElementType; className: string }> = {
+  Pass: { label: 'All pass', Icon: CheckCircle2, className: 'tca-chip--pass' },
+  LargeTextOnly: { label: 'Large only', Icon: BookOpen, className: 'tca-chip--warn' },
+  NearMiss: { label: 'Near miss', Icon: AlertTriangle, className: 'tca-chip--warn' },
+  Fail: { label: 'Failures', Icon: XCircle, className: 'tca-chip--fail' },
 };
 
 export function TokenQueue({ tokens, corrections, context, level, selectedTokenId, onSelectToken }: TokenQueueProps) {
@@ -83,11 +86,9 @@ export function TokenQueue({ tokens, corrections, context, level, selectedTokenI
 
   return (
     <nav aria-label="Token queue" className="flex flex-col h-full">
-      <div className="px-4 py-3 border-b border-border">
-        <p className="text-muted-foreground" style={{ fontSize: '0.75rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Foreground tokens
-        </p>
-        <p className="text-muted-foreground mt-0.5" style={{ fontSize: '0.75rem' }}>
+      <div className="px-4 py-3" style={{ borderBottom: 'var(--tca-hair) solid var(--tca-rule)' }}>
+        <p className="tca-section-label">Foreground tokens</p>
+        <p className="mt-0.5" style={{ fontSize: '0.75rem', color: 'var(--tca-muted)' }}>
           {stats.length} tokens · sorted by failures
         </p>
       </div>
@@ -109,23 +110,22 @@ export function TokenQueue({ tokens, corrections, context, level, selectedTokenI
               tabIndex={isSelected ? 0 : -1}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onClick={() => onSelectToken(s.token.id)}
-              className={[
-                'flex items-center gap-3 px-4 py-3 border-b border-border cursor-pointer transition-colors',
-                'focus-visible:outline-2 focus-visible:outline-[#1D4ED8] focus-visible:outline-offset-[-2px]',
-                isSelected
-                  ? 'bg-[#EFF6FF] border-l-2 border-l-[#1D4ED8]'
-                  : 'hover:bg-muted/60 border-l-2 border-l-transparent',
-              ].join(' ')}
-              style={{ minHeight: '64px' }}
+              className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors"
+              style={{
+                borderBottom: 'var(--tca-hair) solid var(--tca-rule)',
+                borderLeft: isSelected ? '2px solid var(--tca-ink)' : '2px solid transparent',
+                background: isSelected ? 'var(--tca-paper-alt)' : 'transparent',
+                minHeight: '64px',
+              }}
             >
               {/* Color swatch */}
               <span
-                className="shrink-0 rounded-sm border border-border"
+                className="tca-swatch shrink-0"
                 style={{
                   width: '28px',
                   height: '28px',
                   backgroundColor: s.effectiveHex,
-                  outline: isApplied ? '2px solid #047857' : 'none',
+                  outline: isApplied ? '2px solid var(--tca-pass)' : 'none',
                   outlineOffset: '1px',
                 }}
                 aria-hidden="true"
@@ -134,38 +134,27 @@ export function TokenQueue({ tokens, corrections, context, level, selectedTokenI
               {/* Token info */}
               <div className="flex-1 min-w-0">
                 <p
-                  className="text-foreground truncate"
-                  style={{ fontSize: '0.8125rem', fontFamily: "'DM Mono', monospace", fontWeight: isSelected ? 500 : 400 }}
+                  className="truncate"
+                  style={{ fontSize: '0.8125rem', fontFamily: 'var(--tca-mono)', fontWeight: isSelected ? 500 : 400 }}
                 >
                   {s.token.name}
-                  {isApplied && <span className="ml-1.5 text-[#047857]" style={{ fontSize: '0.7rem' }}>✓ corrected</span>}
+                  {isApplied && <span className="ml-1.5" style={{ fontSize: '0.7rem', color: 'var(--tca-pass)' }}>✓ corrected</span>}
                 </p>
-                <p className="text-muted-foreground" style={{ fontSize: '0.75rem', fontFamily: "'DM Mono', monospace" }}>
+                <p style={{ fontSize: '0.75rem', fontFamily: 'var(--tca-mono)', color: 'var(--tca-muted)' }}>
                   {s.effectiveHex}
                 </p>
               </div>
 
               {/* Failure badge */}
               <div className="shrink-0 text-right">
-                {s.failureCount === 0 ? (
-                  <span
-                    className="inline-flex items-center gap-1 rounded px-2 py-0.5"
-                    style={{ fontSize: '0.7rem', color: meta.color, backgroundColor: meta.bg, fontWeight: 500 }}
-                    aria-label="Passes all"
-                  >
-                    <meta.Icon size={10} aria-hidden="true" />
-                    All pass
-                  </span>
-                ) : (
-                  <span
-                    className="inline-flex items-center gap-1 rounded px-2 py-0.5"
-                    style={{ fontSize: '0.7rem', color: meta.color, backgroundColor: meta.bg, fontWeight: 500 }}
-                    aria-label={`${s.failureCount} failure${s.failureCount !== 1 ? 's' : ''}`}
-                  >
-                    <meta.Icon size={10} aria-hidden="true" />
-                    {s.failureCount} failure{s.failureCount !== 1 ? 's' : ''}
-                  </span>
-                )}
+                <span
+                  className={`tca-chip ${meta.className}`}
+                  aria-label={s.failureCount === 0 ? 'Passes all' : `${s.failureCount} failure${s.failureCount !== 1 ? 's' : ''}`}
+                >
+                  <span className="tca-chip__dot" aria-hidden="true" />
+                  <meta.Icon size={10} aria-hidden="true" />
+                  {s.failureCount === 0 ? 'All pass' : `${s.failureCount} failure${s.failureCount !== 1 ? 's' : ''}`}
+                </span>
               </div>
             </li>
           );
